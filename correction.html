@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Mes Plantes" />
+  <title>Mes Plantes 🌿</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --green-deep:   #2d4a3e;
+      --green-mid:    #4a7c68;
+      --green-soft:   #7fb096;
+      --green-pale:   #c8ddd5;
+      --green-mist:   #e8f2ee;
+      --cream:        #f7f4ef;
+      --cream-warm:   #ede8e0;
+      --text-dark:    #1e2e28;
+      --text-mid:     #4a5e56;
+      --text-light:   #8aa39a;
+      --white:        #ffffff;
+      --shadow:       0 4px 24px rgba(45,74,62,0.10);
+      --shadow-soft:  0 2px 12px rgba(45,74,62,0.07);
+      --radius:       16px;
+      --radius-sm:    10px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text-dark);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* LOGIN */
+    #login-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: var(--green-deep);
+      padding: 2rem;
+    }
+    #login-screen .leaf-icon {
+      font-size: 3.5rem;
+      margin-bottom: 1.5rem;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    #login-screen h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.2rem;
+      color: var(--cream);
+      margin-bottom: 0.4rem;
+      text-align: center;
+    }
+    #login-screen p {
+      color: var(--green-pale);
+      margin-bottom: 2.5rem;
+      font-size: 0.95rem;
+      font-weight: 300;
+    }
+    #login-box {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: var(--radius);
+      padding: 2rem;
+      width: 100%;
+      max-width: 360px;
+    }
+    #login-box label {
+      display: block;
+      color: var(--green-pale);
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+    #pwd-input {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: var(--radius-sm);
+      color: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+      margin-bottom: 1.2rem;
+      display: block;
+    }
+    #pwd-input:focus { border-color: var(--green-soft); }
+    #pwd-input::placeholder { color: rgba(200,221,213,0.4); }
+    #login-btn {
+      width: 100%;
+      padding: 0.9rem;
+      background: var(--green-soft);
+      border: none;
+      border-radius: var(--radius-sm);
+      color: var(--green-deep);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: block;
+    }
+    #login-btn:hover { background: var(--green-pale); }
+    #login-error {
+      color: #f4a0a0;
+      font-size: 0.85rem;
+      text-align: center;
+      margin-top: 0.8rem;
+      display: none;
+    }
+
+    /* APP */
+    #app { display: none; min-height: 100vh; }
+
+    header {
+      background: var(--green-deep);
+      padding: 1.4rem 1.5rem 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    header h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.5rem;
+      color: var(--cream);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    #logout-btn {
+      background: none;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 20px;
+      color: var(--green-pale);
+      font-size: 0.8rem;
+      padding: 0.3rem 0.8rem;
+      cursor: pointer;
+    }
+
+    #season-banner {
+      background: var(--green-mid);
+      color: var(--cream);
+      text-align: center;
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 300;
+    }
+    #season-banner span { font-weight: 500; }
+
+    #notif-bar {
+      background: var(--green-mist);
+      border-bottom: 1px solid var(--green-pale);
+      padding: 0.7rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-size: 0.85rem;
+      color: var(--green-deep);
+    }
+    #notif-bar button {
+      margin-left: auto;
+      background: var(--green-mid);
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 0.3rem 0.9rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+
+    main { padding: 1.5rem; max-width: 680px; margin: 0 auto; }
+
+    #due-section { margin-bottom: 2rem; }
+    .section-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.2rem;
+      color: var(--text-dark);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .badge {
+      background: var(--green-mid);
+      color: white;
+      border-radius: 20px;
+      padding: 0.15rem 0.6rem;
+      font-size: 0.75rem;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+    }
+
+    .plant-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .plant-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.3rem;
+      box-shadow: var(--shadow-soft);
+      border: 1.5px solid var(--green-mist);
+      transition: box-shadow 0.2s, transform 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .plant-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--green-soft);
+    }
+    .plant-card.due-today::before { background: var(--green-mid); }
+    .plant-card.overdue::before { background: #d97c6e; }
+    .plant-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 0.7rem;
+    }
+    .plant-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.15rem;
+      color: var(--text-dark);
+    }
+    .card-actions { display: flex; gap: 0.4rem; }
+    .btn-icon {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 0.2rem;
+      border-radius: 6px;
+      transition: background 0.15s;
+    }
+    .btn-icon:hover { background: var(--green-mist); }
+
+    .next-watering {
+      font-size: 0.82rem;
+      color: var(--text-mid);
+      margin-bottom: 0.6rem;
+    }
+    .next-watering.due { color: var(--green-mid); font-weight: 500; }
+    .next-watering.overdue { color: #c0604e; font-weight: 500; }
+
+    .freq-badges { display: flex; gap: 0.4rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
+    .freq-badge { font-size: 0.72rem; padding: 0.2rem 0.6rem; border-radius: 20px; font-weight: 500; }
+    .freq-badge.summer { background: #e8f5e0; color: #3d6b2e; }
+    .freq-badge.winter { background: #e4edf5; color: #2e4a6b; }
+
+    .plant-notes {
+      font-size: 0.8rem;
+      color: var(--text-light);
+      font-style: italic;
+      line-height: 1.4;
+      border-top: 1px solid var(--green-mist);
+      padding-top: 0.6rem;
+      margin-top: 0.4rem;
+    }
+
+    .water-btn {
+      width: 100%;
+      margin-top: 0.9rem;
+      padding: 0.65rem;
+      background: var(--green-mist);
+      border: 1.5px solid var(--green-pale);
+      border-radius: var(--radius-sm);
+      color: var(--green-deep);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+    .water-btn:hover { background: var(--green-pale); }
+    .water-btn.watered { background: var(--green-mid); border-color: var(--green-mid); color: white; }
+
+    #add-btn {
+      position: fixed;
+      bottom: 2rem;
+      right: 1.5rem;
+      width: 56px;
+      height: 56px;
+      background: var(--green-deep);
+      border: none;
+      border-radius: 50%;
+      color: white;
+      font-size: 1.6rem;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(45,74,62,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s;
+      z-index: 200;
+    }
+    #add-btn:hover { transform: scale(1.08); }
+
+    #empty-state { text-align: center; padding: 4rem 2rem; color: var(--text-light); }
+    #empty-state .big-icon { font-size: 3rem; margin-bottom: 1rem; }
+    #empty-state h3 { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: var(--text-mid); margin-bottom: 0.5rem; }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(30,46,40,0.55);
+      z-index: 500;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal {
+      background: var(--white);
+      border-radius: var(--radius) var(--radius) 0 0;
+      padding: 2rem 1.5rem 2.5rem;
+      width: 100%;
+      max-width: 520px;
+      transform: translateY(40px);
+      transition: transform 0.3s;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-overlay.open .modal { transform: translateY(0); }
+    .modal h2 { font-family: 'DM Serif Display', serif; font-size: 1.4rem; color: var(--text-dark); margin-bottom: 1.5rem; }
+
+    .form-group { margin-bottom: 1.1rem; }
+    .form-group label { display: block; font-size: 0.82rem; font-weight: 500; color: var(--text-mid); letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 0.45rem; }
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 0.75rem 0.9rem;
+      background: var(--cream);
+      border: 1.5px solid var(--cream-warm);
+      border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      color: var(--text-dark);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--green-soft); background: var(--white); }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+    .form-hint { font-size: 0.75rem; color: var(--text-light); margin-top: 0.3rem; }
+
+    .modal-actions { display: flex; gap: 0.8rem; margin-top: 1.5rem; }
+    .btn-cancel { flex: 1; padding: 0.8rem; background: var(--cream); border: 1.5px solid var(--cream-warm); border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 0.95rem; color: var(--text-mid); cursor: pointer; }
+    .btn-save { flex: 2; padding: 0.8rem; background: var(--green-deep); border: none; border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 500; color: white; cursor: pointer; }
+    .btn-save:hover { background: var(--green-mid); }
+
+    #toast {
+      position: fixed;
+      bottom: 5.5rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--green-deep);
+      color: var(--cream);
+      padding: 0.7rem 1.4rem;
+      border-radius: 30px;
+      font-size: 0.88rem;
+      z-index: 999;
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 480px) {
+      .form-row { grid-template-columns: 1fr; }
+      main { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="leaf-icon">🌿</div>
+  <h1>Mes Plantes</h1>
+  <p>Votre jardin intérieur, organisé.</p>
+  <div id="login-box">
+    <label for="pwd-input">Mot de passe</label>
+    <input type="password" id="pwd-input" placeholder="••••••••" />
+    <button type="button" id="login-btn">Entrer →</button>
+    <div id="login-error">❌ Mot de passe incorrect.</div>
+  </div>
+</div>
+
+<div id="app">
+  <header>
+    <h1>🌿 Mes Plantes</h1>
+    <button type="button" id="logout-btn">Déconnexion</button>
+  </header>
+  <div id="season-banner">Saison actuelle : <span id="season-label">—</span></div>
+  <div id="notif-bar" style="display:none">
+    🔔 Activez les notifications pour recevoir vos rappels
+    <button type="button" id="enable-notif-btn">Activer</button>
+  </div>
+  <main>
+    <section id="due-section" style="display:none">
+      <div class="section-title">💧 À arroser aujourd'hui <span class="badge" id="due-count">0</span></div>
+      <div class="plant-grid" id="due-grid"></div>
+    </section>
+    <section>
+      <div class="section-title">🪴 Toutes mes plantes <span class="badge" id="all-count">0</span></div>
+      <div class="plant-grid" id="all-grid"></div>
+      <div id="empty-state">
+        <div class="big-icon">🌱</div>
+        <h3>Aucune plante pour l'instant</h3>
+        <p>Appuyez sur + pour ajouter votre première plante.</p>
+      </div>
+    </section>
+  </main>
+  <button type="button" id="add-btn">+</button>
+</div>
+
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <h2 id="modal-title">Nouvelle plante</h2>
+    <div class="form-group">
+      <label for="f-name">Nom de la plante *</label>
+      <input type="text" id="f-name" placeholder="ex: Monstera, Pothos…" />
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="f-summer">Printemps / Été</label>
+        <input type="number" id="f-summer" min="1" max="90" placeholder="7" />
+        <div class="form-hint">jours entre chaque arrosage</div>
+      </div>
+      <div class="form-group">
+        <label for="f-winter">Automne / Hiver</label>
+        <input type="number" id="f-winter" min="1" max="90" placeholder="14" />
+        <div class="form-hint">jours entre chaque arrosage</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="f-last">Dernier arrosage</label>
+      <input type="date" id="f-last" />
+    </div>
+    <div class="form-group">
+      <label for="f-notes">Notes & conseils</label>
+      <textarea id="f-notes" placeholder="ex: Évite le soleil direct…"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn-cancel" id="modal-cancel">Annuler</button>
+      <button type="button" class="btn-save" id="modal-save">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  // ← CHANGEZ CE MOT DE PASSE ICI
+  var PASSWORD = "mesp1antes";
+
+  function getSeason() {
+    var m = new Date().getMonth() + 1;
+    return (m >= 3 && m <= 8) ? 'summer' : 'winter';
+  }
+
+  function getSeasonLabel(s) {
+    return s === 'summer' ? '🌸 Printemps / Été' : '❄️ Automne / Hiver';
+  }
+
+  function loadPlants() {
+    try { return JSON.parse(localStorage.getItem('plants') || '[]'); }
+    catch(e) { return []; }
+  }
+
+  function savePlants(plants) {
+    localStorage.setItem('plants', JSON.stringify(plants));
+  }
+
+  function genId() {
+    return Date.now().toString(36) + Math.random().toString(36).slice(2);
+  }
+
+  function getFreq(plant) {
+    return getSeason() === 'summer'
+      ? (parseInt(plant.freqSummer) || 7)
+      : (parseInt(plant.freqWinter) || 14);
+  }
+
+  function getNextWatering(plant) {
+    if (!plant.lastWatered) return new Date();
+    var last = new Date(plant.lastWatered);
+    last.setDate(last.getDate() + getFreq(plant));
+    return last;
+  }
+
+  function getDaysUntil(date) {
+    var today = new Date(); today.setHours(0,0,0,0);
+    var d = new Date(date); d.setHours(0,0,0,0);
+    return Math.round((d - today) / 86400000);
+  }
+
+  function formatNext(plant) {
+    var days = getDaysUntil(getNextWatering(plant));
+    if (days < 0) return { label: 'En retard de ' + Math.abs(days) + ' jour(s) !', cls: 'overdue' };
+    if (days === 0) return { label: "Aujourd'hui ! 💧", cls: 'due' };
+    if (days === 1) return { label: 'Demain', cls: '' };
+    return { label: 'Dans ' + days + ' jours', cls: '' };
+  }
+
+  function esc(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function renderCard(plant) {
+    var f = formatNext(plant);
+    var card = document.createElement('div');
+    card.className = 'plant-card' + (f.cls === 'due' ? ' due-today' : '') + (f.cls === 'overdue' ? ' overdue' : '');
+    card.dataset.id = plant.id;
+    card.innerHTML =
+      '<div class="card-top">' +
+        '<div class="plant-name">' + esc(plant.name) + '</div>' +
+        '<div class="card-actions">' +
+          '<button type="button" class="btn-icon edit-btn" data-id="' + plant.id + '">✏️</button>' +
+          '<button type="button" class="btn-icon delete-btn" data-id="' + plant.id + '">🗑️</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="next-watering ' + f.cls + '">🗓 ' + f.label + '</div>' +
+      '<div class="freq-badges">' +
+        '<span class="freq-badge summer">☀️ tous les ' + (plant.freqSummer || 7) + 'j</span>' +
+        '<span class="freq-badge winter">❄️ tous les ' + (plant.freqWinter || 14) + 'j</span>' +
+      '</div>' +
+      (plant.notes ? '<div class="plant-notes">' + esc(plant.notes) + '</div>' : '') +
+      '<button type="button" class="water-btn" data-id="' + plant.id + '">💧 Marquer comme arrosée</button>';
+    return card;
+  }
+
+  function renderAll() {
+    var plants = loadPlants();
+    document.getElementById('season-label').textContent = getSeasonLabel(getSeason());
+    document.getElementById('all-count').textContent = plants.length;
+
+    var due = plants.filter(function(p) { return getDaysUntil(getNextWatering(p)) <= 0; });
+    document.getElementById('due-count').textContent = due.length;
+    document.getElementById('due-section').style.display = due.length ? 'block' : 'none';
+
+    document.getElementById('due-grid').innerHTML = '';
+    document.getElementById('all-grid').innerHTML = '';
+    document.getElementById('empty-state').style.display = plants.length ? 'none' : 'block';
+
+    var sorted = plants.slice().sort(function(a,b) {
+      return getDaysUntil(getNextWatering(a)) - getDaysUntil(getNextWatering(b));
+    });
+
+    due.forEach(function(p) { document.getElementById('due-grid').appendChild(renderCard(p)); });
+    sorted.forEach(function(p) { document.getElementById('all-grid').appendChild(renderCard(p)); });
+
+    document.querySelectorAll('.water-btn').forEach(function(btn) {
+      btn.addEventListener('click', waterPlant);
+    });
+    document.querySelectorAll('.edit-btn').forEach(function(btn) {
+      btn.addEventListener('click', openEditModal);
+    });
+    document.querySelectorAll('.delete-btn').forEach(function(btn) {
+      btn.addEventListener('click', deletePlant);
+    });
+  }
+
+  function waterPlant(e) {
+    var id = e.currentTarget.dataset.id;
+    var plants = loadPlants();
+    var idx = -1;
+    for (var i = 0; i < plants.length; i++) { if (plants[i].id === id) { idx = i; break; } }
+    if (idx === -1) return;
+    plants[idx].lastWatered = new Date().toISOString().split('T')[0];
+    savePlants(plants);
+    e.currentTarget.textContent = '✅ Arrosée !';
+    e.currentTarget.classList.add('watered');
+    showToast(plants[idx].name + ' arrosée ! Prochain dans ' + getFreq(plants[idx]) + ' jours 🌿');
+    setTimeout(renderAll, 800);
+  }
+
+  function deletePlant(e) {
+    var id = e.currentTarget.dataset.id;
+    var plants = loadPlants();
+    var plant = null;
+    for (var i = 0; i < plants.length; i++) { if (plants[i].id === id) { plant = plants[i]; break; } }
+    if (!plant) return;
+    if (!confirm('Supprimer « ' + plant.name + ' » ?')) return;
+    savePlants(plants.filter(function(p) { return p.id !== id; }));
+    renderAll();
+    showToast('Plante supprimée.');
+  }
+
+  var editingId = null;
+
+  function openAddModal() {
+    editingId = null;
+    document.getElementById('modal-title').textContent = 'Nouvelle plante';
+    document.getElementById('f-name').value = '';
+    document.getElementById('f-summer').value = '7';
+    document.getElementById('f-winter').value = '14';
+    document.getElementById('f-last').value = new Date().toISOString().split('T')[0];
+    document.getElementById('f-notes').value = '';
+    document.getElementById('modal-overlay').classList.add('open');
+  }
+
+  function openEditModal(e) {
+    var id = e.currentTarget.dataset.id;
+    var plants = loadPlants();
+    var plant = null;
+    for (var i = 0; i < plants.length; i++) { if (plants[i].id === id) { plant = plants[i]; break; } }
+    if (!plant) return;
+    editingId = id;
+    document.getElementById('modal-title').textContent = 'Modifier la plante';
+    document.getElementById('f-name').value = plant.name;
+    document.getElementById('f-summer').value = plant.freqSummer || 7;
+    document.getElementById('f-winter').value = plant.freqWinter || 14;
+    document.getElementById('f-last').value = plant.lastWatered || '';
+    document.getElementById('f-notes').value = plant.notes || '';
+    document.getElementById('modal-overlay').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('modal-overlay').classList.remove('open');
+  }
+
+  function savePlant() {
+    var name = document.getElementById('f-name').value.trim();
+    if (!name) { document.getElementById('f-name').focus(); return; }
+    var plant = {
+      id: editingId || genId(),
+      name: name,
+      freqSummer: parseInt(document.getElementById('f-summer').value) || 7,
+      freqWinter: parseInt(document.getElementById('f-winter').value) || 14,
+      lastWatered: document.getElementById('f-last').value || null,
+      notes: document.getElementById('f-notes').value.trim()
+    };
+    var plants = loadPlants();
+    if (editingId) {
+      for (var i = 0; i < plants.length; i++) { if (plants[i].id === editingId) { plants[i] = plant; break; } }
+      showToast(plant.name + ' mis à jour ! 🌿');
+    } else {
+      plants.push(plant);
+      showToast(plant.name + ' ajoutée ! 🌱');
+    }
+    savePlants(plants);
+    closeModal();
+    renderAll();
+  }
+
+  function showToast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(function() { t.classList.remove('show'); }, 3000);
+  }
+
+  function initApp() {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    if ('Notification' in window && Notification.permission === 'default') {
+      document.getElementById('notif-bar').style.display = 'flex';
+    }
+    renderAll();
+  }
+
+  // ── CONNEXION ──
+  document.getElementById('login-btn').addEventListener('click', function() {
+    var val = document.getElementById('pwd-input').value;
+    if (val === PASSWORD) {
+      document.getElementById('login-error').style.display = 'none';
+      sessionStorage.setItem('auth', '1');
+      initApp();
+    } else {
+      document.getElementById('login-error').style.display = 'block';
+      document.getElementById('pwd-input').value = '';
+      document.getElementById('pwd-input').focus();
+    }
+  });
+
+  document.getElementById('pwd-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      document.getElementById('login-btn').click();
+    }
+  });
+
+  document.getElementById('logout-btn').addEventListener('click', function() {
+    sessionStorage.removeItem('auth');
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('pwd-input').value = '';
+  });
+
+  document.getElementById('add-btn').addEventListener('click', openAddModal);
+  document.getElementById('modal-cancel').addEventListener('click', closeModal);
+  document.getElementById('modal-save').addEventListener('click', savePlant);
+
+  document.getElementById('modal-overlay').addEventListener('click', function(e) {
+    if (e.target === document.getElementById('modal-overlay')) closeModal();
+  });
+
+  document.getElementById('enable-notif-btn').addEventListener('click', function() {
+    Notification.requestPermission().then(function(result) {
+      if (result === 'granted') {
+        document.getElementById('notif-bar').style.display = 'none';
+        showToast('Notifications activées ! 🔔');
+      }
+    });
+  });
+
+  if (sessionStorage.getItem('auth') === '1') {
+    initApp();
+  }
+</script>
+</body>
+</html>
