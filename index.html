@@ -923,7 +923,7 @@ document.getElementById('login-btn').addEventListener('click', () => {
   const val = document.getElementById('pwd-input').value;
   if (val === PASSWORD) {
     sessionStorage.setItem('auth', '1');
-    document.getElementById('login-error').style.display = 'none';
+    document.getElementById('login-error').style.display = 'block';
     initApp();
   } else {
     document.getElementById('login-error').style.display = 'block';
